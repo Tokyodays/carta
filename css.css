@@ -1,24 +1,32 @@
 @charset "UTF-8";
 /* CSS Document */
-
+#grid-content > li {
+	list-style-type: none;
+	padding: 0;
+	margin: 0 20px 20px 0;
+}
 /* entire container, keeps perspective */
 .flip-container {
 	-webkit-perspective: 1000;
 	-moz-perspective: 1000;
 	-o-perspective: 1000;
 	perspective: 1000;
+	cursor: pointer;
 }
 	/* flip the pane when hovered */
+	/*
 	.flip-container:hover .flipper, .flip-container.hover .flipper {
 		-webkit-transform: rotateY(180deg);
 		-moz-transform: rotateY(180deg);
 		-o-transform: rotateY(180deg);
 		transform: rotateY(180deg);
 	}
-
+*/
 .flip-container, .front, .back {
-	width: 320px;
-	height: 480px;
+	width: 150px;
+	height: 190px;
+	padding: 0px;
+	border-radius: 5px;
 }
 
 /* flip speed goes here */
@@ -44,20 +52,29 @@
 	-moz-backface-visibility: hidden;
 	-o-backface-visibility: hidden;
 	backface-visibility: hidden;
-
 	position: absolute;
 	top: 0;
 	left: 0;
-writing-mode: tb-rl;
--moz-writing-mode: vertical-rl;
--webkit-writing-mode: vertical-rl;
-writing-mode: vertical-rl;
 }
 .front {
-  background-color: green;
+	font-size: 20px;
+	writing-mode: tb-rl;
+	-moz-writing-mode: vertical-rl;
+	-webkit-writing-mode: vertical-rl;
+	writing-mode: vertical-rl;
+  background-color: transparent;
+	border: 1px solid #ccc;
+	box-shadow: 0px 0px 3px rgba(0,0,0,0.1);
+}
+.front p {
+	margin: 0;
+	padding: 10px;
 }
 .back {
   background-color: red;
+	text-align: center;
+	vertical-align: middle;
+	font-size: 18px;
 }
 /* front pane, placed above back */
 .front {

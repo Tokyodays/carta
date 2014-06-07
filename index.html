@@ -8,62 +8,9 @@
 <link rel="stylesheet" type="text/css" href="css.css">
 </head>
 <body>
+  <h1>日経カルタ</h1>
   <ul id="grid-content">
-<li>
-  <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
-    <div class="flipper">
-      <div class="front">
-        あああふぇわ
-      </div>
-      <div class="back">
-        ふぇわふぇわふぇわ
-      </div>
-    </div>
-  </div>
-</li>
-<li>
-  <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
-    <div class="flipper">
-      <div class="front">
-        あああふぇわ
-      </div>
-      <div class="back">
-        ふぇわふぇわふぇわ
-      </div>
-    </div>
-  </div>
-</li>
-<li>
-  <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
-    <div class="flipper">
-      <div class="front">
-        あああふぇわ
-      </div>
-      <div class="back">
-        ふぇわふぇわふぇわ
-      </div>
-    </div>
-  </div>
-</li>
   </ul>
-
-  li要素
-  <ol class="best_list">
-  <li>この文章は再生されません</li><li class="gtts">この文章は再生されます</li><li>This document does not play</li><li class="gtts">I can play this sentence</li>
-  </ol>
-  span要素
-  <span class="gtts">こんにちわ</span>
-  <span class="gtts">Hello</span>
-  <span class="gtts">Keeps going and going and going</span>
-  <span class="gtts">Make the most of now</span>
-  table要素
-  <table class="bordered">
-  <tr><th>読ませたい単語</th><th>読み方</th></tr>
-  <tr><td class="gtts">function</td></tr>
-  <tr><td class="gtts">false</td></tr>
-  <tr><td class="gtts">none</td></tr>
-  <tr><td class="gtts">undefined</td></tr>
-  </table>
   <div id="GoogleTTS" name="GoogleTTS" style="visibility:hidden;"></div>
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js" type="text/javascript" charset="UTF-8"></script>
@@ -71,7 +18,70 @@
   <script src="jquery.vgrid.min.js"></script>
   <script>
   $(function(){
-  	$("#grid-content").vgrid();
+
+    var set_gtts = function(string){
+      gtts('ja&q=' + encodeURI(string) + '&double=no&dummy=' + new Date().getTime());
+      return;
+    };
+
+    var set_element = function(element){
+      set_gtts($(element).find(".front").text());
+    };
+
+    var touch_atari = function(o){
+      $(o.data.element).remove();
+      set_element(get_card());
+    }
+
+    var get_card = function(){
+      var _length = $("#grid-content > li").length;
+      var _num = Math.floor( Math.random() * _length );
+      $("#grid-content > li").each(function(_index, _element){
+        $(_element).find(".back").text("ハズレ");
+        if(_num == _index){
+            $(_element).find(".back").text("アタリ");
+            $(_element).on("click", {element: _element},touch_atari);
+        }
+      });
+      return $("#grid-content > li")[_num];
+    }
+
+
+
+
+    function set_content(data){
+      for(var i = 0, ileng = data.length; i < ileng; i++){
+        var _li = $('<li>');
+        var _container = $('<div class="flip-container" data-id="">');
+        //_container.attr("ontouchstart", "this.classList.toggle('hover');");
+        _container.attr("data-id", data[i].kiji_id);
+        _container.css("transform", "rotate(" + (Math.floor(Math.random() * 10) - 5) + "deg)");
+        var _flipper = $('<div class="flipper">');
+        var _front = $('<div class="front">');
+        var _back = $('<div class="back">');
+
+        _front.html("<p>" + data[i].title + "</p>");
+        _flipper.append(_front).append(_back);
+        _container.append(_flipper);
+        _li.append(_container);
+        $("#grid-content").append(_li);
+      }
+      $("#grid-content").vgrid();
+      set_element(get_card());
+    }
+    var _url = "http://nikkeilabs-exp.appspot.com/data/news?uid=sokuho&volume=21";
+  	$.ajax({
+  		type: "GET",
+  		url: _url,
+  		cache: true,
+  		success: function(data){
+  			set_content(data.articles);
+  		},
+  		error: function(msg){
+  			console.debug(msg);
+  		}
+  	});
+
   });
 
   </script>
