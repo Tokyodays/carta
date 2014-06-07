@@ -25,13 +25,13 @@
     };
 
     var set_element = function(element){
-      set_gtts($(element).find(".front").text());
+      set_gtts($(element).find(".flip-container").attr("data-text"));
     };
 
     var touch_atari = function(o){
       $(o.data.element).remove();
       set_element(get_card());
-    }
+    };
 
     var get_card = function(){
       var _length = $("#grid-content > li").length;
@@ -44,32 +44,47 @@
         }
       });
       return $("#grid-content > li")[_num];
-    }
+    };
 
-
+    var get_char = function(_str){
+      var _result = "";
+      var _check = "“”「」（）()";
+      for(var i = 0, ileng = _str.length; i < ileng; i++){
+        var _tmp = _str.charAt(i);
+        if(_check.indexOf(_tmp) == -1){
+          return _tmp;
+        }
+      }
+    };
 
 
     function set_content(data){
       for(var i = 0, ileng = data.length; i < ileng; i++){
-        var _li = $('<li>');
-        var _container = $('<div class="flip-container" data-id="">');
-        //_container.attr("ontouchstart", "this.classList.toggle('hover');");
-        _container.attr("data-id", data[i].kiji_id);
-        _container.css("transform", "rotate(" + (Math.floor(Math.random() * 10) - 5) + "deg)");
-        var _flipper = $('<div class="flipper">');
-        var _front = $('<div class="front">');
-        var _back = $('<div class="back">');
+        if(data[i].index_image != undefined){
+          var _li = $('<li>');
+          var _container = $('<div class="flip-container" data-id="" data-text="">');
+          //_container.attr("ontouchstart", "this.classList.toggle('hover');");
+          _container.attr("data-id", data[i].kiji_id);
+          _container.attr("data-text", data[i].title);
+          _container.css({
+            "transform": "rotate(" + (Math.floor(Math.random() * 10) - 5) + "deg)",
+            "background-image": "url(" + data[i].index_image.image_path + ")"
+          });
+          var _flipper = $('<div class="flipper">');
+          var _front = $('<div class="front">');
+          var _back = $('<div class="back">');
 
-        _front.html("<p>" + data[i].title + "</p>");
-        _flipper.append(_front).append(_back);
-        _container.append(_flipper);
-        _li.append(_container);
-        $("#grid-content").append(_li);
+          _front.html("<p>" + get_char(data[i].title) + "</p>");
+          _flipper.append(_front).append(_back);
+          _container.append(_flipper);
+          _li.append(_container);
+          $("#grid-content").append(_li);
+        }
       }
       $("#grid-content").vgrid();
       set_element(get_card());
     }
-    var _url = "http://nikkeilabs-exp.appspot.com/data/news?uid=sokuho&volume=21";
+    var _url = "http://nikkeilabs-exp.appspot.com/data/news?uid=webkan&volume=21";
   	$.ajax({
   		type: "GET",
   		url: _url,
